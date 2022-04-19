@@ -39,9 +39,9 @@ font-weight:700;
 margin:40px 0px;
 a{
     color:hsla(360,0%,70%,1);
-    transition:color 0.15s ease;
+    transition:color 0.05s ease;
     &:hover{
-        color:hsla(360,70%,50%,1);
+        color:hsla(200,70%,50%,1);
     }
 }
 `
@@ -64,4 +64,19 @@ width:50vw;
 height:100vh;
 padding:50px;
 overflow:scroll;
+position:relative;
+
+`
+
+export const Loading = styled.div`
+display: ${(props) => props.display === true ? "flex" : "none"};
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+justify-content:center;
+align-items:center;
+background:white;
+text-align:center;
 `

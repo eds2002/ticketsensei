@@ -1,19 +1,23 @@
+
 import styled from 'styled-components'
 
-const Box = ({img, name, desc, city, state, startDate}) => {
+const Box = ({img, name, desc, city, state, startDate, id, link}) => {
+    const stringLink = JSON.stringify(link);
   return (
-    <Container>
-        <BoxImage>
-            <img src = {img} alt = {`image of ${name}`}></img>
-        </BoxImage>
-        <EventName>{name}</EventName>
-        <Date>{state}, {city} </Date>
-        <EventDesc>{desc}</EventDesc>
-        <Price></Price>
-        <Links>
-            <Button>Learn More</Button>
-        </Links>
-    </Container>
+    <a href = {`${link}`} target = "_blank">
+        <Container id = {id}>
+            <BoxImage>
+                <img src = {img} alt = {`image of ${name}`}></img>
+            </BoxImage>
+            <EventName>{name}</EventName>
+            <Date>{state}, {city} </Date>
+            <EventDesc>{desc}</EventDesc>
+            <Price></Price>
+            <Links>
+                <Button>Learn More</Button>
+            </Links>
+        </Container>
+    </a>
   )
 }
 
@@ -39,6 +43,7 @@ padding:15px;
 margin:50px 0px;
 position:relative;
 cursor:pointer;
+animation: zoom 1s cubic-bezier(0.85, 0, 0.15, 1) forwards;
 &:hover ${Links}{
     position:absolute;
     top:0;
@@ -50,11 +55,22 @@ cursor:pointer;
     transition-delay:1s;
     transition-property:opacity;
 }
+
+@keyframes zoom {
+    0%{
+        transform:scale(0);
+        opacity:0;
+    }
+    100%{
+        transform:scale(1);
+        opacity:100;
+    }
+}
 `
 const BoxImage = styled.div`
 background:gray;
 width:100%;
-height:125px;
+height:200px;
 border-radius:15px;
 img{
     width:100%;

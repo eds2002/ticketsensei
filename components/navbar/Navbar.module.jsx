@@ -6,6 +6,7 @@ height:75px;
 display:flex;
 justify-content:space-between;
 align-items:center;
+background:hsla(360,0%,95%,1);
 `
 
 export const NavLeft = styled.nav`
