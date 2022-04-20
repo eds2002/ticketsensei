@@ -8,51 +8,70 @@ import Search from '../components/search/Search'
 
 export default function Home() {
 
-  const [state,setState] = useState({
-    resultsHeading: "Click on any link to get started!",
-    resultsSubHeading:"",
-    isLoading: false,
-    search:false,
+  const [state,setState] = useState(
+    {
+      resultsHeading: "",
+      resultsSubHeading:"",
+      isLoading: false,
   })
+  const [search, setSearch] = useState(true);
   const [results, setResults] = useState(null)
-
+  const [userKeyword, setUserKeyword] = useState("");
   
-
   // Events in the united states
   async function fetchUSEvents(){
-    setIsLoading(true);
+    setState({isLoading:true})
     const response = await fetch('https://app.ticketmaster.com/discovery/v2/events.json?countryCode=US&apikey=aHZGTbRV51sLBr9URwtcoKYSuSQmQXEr');
     const data = await response.json();
-    setIsLoading(false);
-    setResultsHeading("Events in the United States");
-    setResultsSubHeading("Start scrolling to see all events in the U.S!");
+    setState({isLoading:false})
+    setState(
+      {
+        resultsHeading:"Events in the U.S", 
+        resultsSubHeading:"Start scrolling to see all events in the U.S!"
+      }
+    )
 
     setResults(data._embedded.events);
   }
   
   // Music events in los angeles
   async function fetchLAMusicEvents(){
-    setIsLoading(true);
+    setState({isLoading:true})
     const response = await fetch('https://app.ticketmaster.com/discovery/v2/events.json?classificationName=music&dmaId=324&apikey=aHZGTbRV51sLBr9URwtcoKYSuSQmQXEr');
     const data = await response.json();
-    setIsLoading(false);
-    setResultsHeading("Music events in L.A");
-    setResultsSubHeading("Start scrolling to see all music events in Los Angeles!");
+    setState({isLoading:false});
     
     setResults(data._embedded.events);
+    setState(
+      {
+        resultsHeading:"Music events in L.A",
+        resultsSubHeading: "Start scrolling to see all music events in Los Angeles!"
+      }
+    );
   }
   
   //UK Events
   async function fetchCAEvents(){
-    setIsLoading(true);
-    const response = await fetch('https://app.ticketmaster.com/discovery/v2/events.json?countryCode=CA&apikey=aHZGTbRV51sLBr9URwtcoKYSuSQmQXEr');
+    setState({isLoading:true})
+    const response = await fetch(`https://app.ticketmaster.com/discovery/v2/events.json?keyword=${userKeyword}&apikey=aHZGTbRV51sLBr9URwtcoKYSuSQmQXEr`);
     const data = await response.json();
-    setIsLoading(false);
-    setResultsHeading("Events in Canada");
-    setResultsSubHeading("Start scrolling to see all events in Canada!");
-    setResults(data._embedded.events);
+    setState({isLoading:false})
+    setState(
+      {
+        resultsHeading:`Results for "${userKeyword}"`,
+        resultsSubHeading: "Start scrolling to see all events in Canda"
+      }
+    )
+    try{
+      setResults(data._embedded.events);
+    }catch(e){
+      console.log(e)
+    }
   }
+
   console.log(results);
+
+
   return (
     <Container>
       <Wrapper>
@@ -76,7 +95,7 @@ export default function Home() {
               <ListItem onClick = {()=>fetchCAEvents()}>
                 <Link href = "/"><a>Events in Canada</a></Link>
               </ListItem>          
-              <ListItem onClick = {()=>setState({search: true})}> 
+              <ListItem onClick = {()=>setSearch(!search)}> 
                 <Link href = "/"><a>Search Events...</a></Link>
               </ListItem>          
             </List>
@@ -93,7 +112,7 @@ export default function Home() {
           </TextWrapper>
           {results != null &&
             results.map(result =>(
-              <Box id = {result.id} name = {(result.name ? result.name : "N/A")} startDate = {result.dates.start.dateTime} img = {result.images[0].url} countryCode = {result._embedded.venues[0].country.countryCode} state = {result._embedded.venues[0].state.name} city = {result._embedded.venues[0].city.name} link = {result.url}/>
+              <Box key = {result.id} id = {result.id} name = {(result.name) ? result.name : "m"} startDate = {result.dates.start.dateTime} img = {result.images[0].url} countryCode = {result._embedded.venues[0].country.countryCode} state = {(!result._embedded.venues[0].state.name === undefined) ? result._embedded.venues[0].state.name : ""} city = {result._embedded.venues[0].city.name} link = {result.url}/>
             ))
           }
           <Loading display = {state.isLoading}>
@@ -103,7 +122,7 @@ export default function Home() {
           </Loading>
         </Right>
       </Wrapper>
-      <Search/>
+      <Search clicked = {search} setUserKeyword = {setUserKeyword}/>
     </Container>
   )
 }
