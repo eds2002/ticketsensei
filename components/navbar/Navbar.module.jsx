@@ -6,7 +6,11 @@ height:75px;
 display:flex;
 justify-content:space-between;
 align-items:center;
+position:relative;
 background:hsla(360,0%,95%,1);
+@media (max-width:800px){
+    justify-content:center;
+}
 `
 
 export const NavLeft = styled.nav`
@@ -20,6 +24,9 @@ a{
     font-weight:700;
     color:hsla(360,0%,45%,1)
 }
+@media (max-width:800px){
+    display:none;
+}
 `
 export const Logo = styled.h1`
 font-size:1rem;
@@ -28,12 +35,19 @@ flex:1;
 display:flex;
 justify-content:center;
 align-items:center;
+@media (max-width:800px){
+    text-align:center;
+    position:absolute;
+}
 `
 export const NavRight = styled.nav`
 flex:1;
 display:flex;
 justify-content:center;
 align-items:center;
+@media (max-width:800px){
+    display:none;
+}
 `
 export const List = styled.ul`
 list-style-type:none;

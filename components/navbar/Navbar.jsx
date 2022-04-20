@@ -15,13 +15,13 @@ const Navbar = () => {
         </Styled.Logo>
         <Styled.NavRight>
             <Styled.List>
-                <Styled.ListItem>
+                <Styled.ListItem className = "link">
                     <Link href = "/"><a>Insta</a></Link>
                 </Styled.ListItem>
-                <Styled.ListItem>
+                <Styled.ListItem className = "link">
                     <Link href = "/"><a>Fb</a></Link>
                 </Styled.ListItem>
-                <Styled.ListItem>
+                <Styled.ListItem className = "button">
                     <Link href = "/"><Styled.Button>
                         Book now
                     </Styled.Button></Link>

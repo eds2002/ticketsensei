@@ -40,6 +40,7 @@ background:hsla(360,0%, 90%,1);
 border-radius:15px;
 padding:15px;
 margin:50px 0px;
+min-width:300px;
 max-width:500px;
 position:relative;
 cursor:pointer;

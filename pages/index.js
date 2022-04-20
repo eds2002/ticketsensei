@@ -9,6 +9,7 @@ import Search from '../components/search/Search'
 export default function Home() {
   const [search, setSearch] = useState(true);
   const [results, setResults] = useState(null)
+  const [rightContainer, setRightContainer] = useState(false);
   const [state,setState] = useState(
     {
       resultsHeading: "",
@@ -26,17 +27,36 @@ export default function Home() {
   // Events in the united states
   async function fetchUSEvents(){
     setState({isLoading:true})
-    const response = await fetch('https://app.ticketmaster.com/discovery/v2/events.json?countryCode=US&apikey=aHZGTbRV51sLBr9URwtcoKYSuSQmQXEr');
+    const response = await fetch('https://app.ticketmaster.com/discovery/v2/events.json?countryCode=CA&apikey=aHZGTbRV51sLBr9URwtcoKYSuSQmQXEr');
     const data = await response.json();
     setState({isLoading:false})
     setState(
       {
         resultsHeading:"Events in the U.S", 
-        resultsSubHeading:"Start scrolling to see all events in the U.S!"
+        resultsSubHeading:"Start scrolling to see all events in the United States!"
       }
     )
 
     setResults(data._embedded.events);
+    setRightContainer(true);
+  }
+
+
+  // FETCH CANADA EVENTS
+  async function fetchCAEvents(){
+    setState({isLoading:true})
+    const response = await fetch('https://app.ticketmaster.com/discovery/v2/events.json?countryCode=US&apikey=aHZGTbRV51sLBr9URwtcoKYSuSQmQXEr');
+    const data = await response.json();
+    setState({isLoading:false})
+    setState(
+      {
+        resultsHeading:"Events in Canada", 
+        resultsSubHeading:"Start scrolling to see all events in Canada!"
+      }
+    )
+
+    setResults(data._embedded.events);
+    setRightContainer(true);
   }
   
   // Music events in los angeles
@@ -47,6 +67,7 @@ export default function Home() {
     setState({isLoading:false});
     
     setResults(data._embedded.events);
+    setRightContainer(true);
     setState(
       {
         resultsHeading:"Music events in L.A",
@@ -71,6 +92,7 @@ export default function Home() {
           error:false,
         }
       )
+      setRightContainer(true);
     }catch(e){
       setState(
         {
@@ -80,6 +102,7 @@ export default function Home() {
         }
       )
       setResults(null)
+      setRightContainer(false);
     }
   }
 
@@ -119,7 +142,7 @@ export default function Home() {
               <ListItem onClick = {()=>fetchLAMusicEvents()}>
                 <Link href = "/"><a>Music Events in Los Angeles</a></Link>
               </ListItem>          
-              <ListItem onClick = {()=>fetchKeyWordEvents()}>
+              <ListItem onClick = {()=>fetchCAEvents()}>
                 <Link href = "/"><a>Events in Canada</a></Link>
               </ListItem>          
               <ListItem onClick = {()=>setSearch(!search)}> 
@@ -128,8 +151,10 @@ export default function Home() {
             </List>
           </Nav>
         </Left>
-        <Right>
+        <Right mobileDisplay = {rightContainer}>
           <TextWrapper>
+            <div className = "line" onClick={()=>setRightContainer(false)}>
+            </div>
             <Heading>
               {state.resultsHeading}
             </Heading>
@@ -137,11 +162,13 @@ export default function Home() {
               {state.resultsSubHeading}
             </Subheading>
           </TextWrapper>
-          {dataValue != null &&
-            dataValue.map(result =>(
-              <Box key = {result.id} id = {result.id} name = {result.name} /*startDate = {result.dates.start.dateTime}*/ img = {result.img} countryCode = {result.countryCode} state = {result.state} city = {result.city} link = {result.link} />
-            ))
-          }
+          <div>
+            {dataValue != null &&
+              dataValue.map(result =>(
+                <Box key = {result.id} id = {result.id} name = {result.name} /*startDate = {result.dates.start.dateTime}*/ img = {result.img} countryCode = {result.countryCode} state = {result.state} city = {result.city} link = {result.link} />
+              ))
+            }
+          </div>
           <Loading display = {state.isLoading}>
             <Heading>
               Loading your results, please wait...
