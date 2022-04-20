@@ -7,17 +7,22 @@ import Box from '../components/box/Box'
 import Search from '../components/search/Search'
 
 export default function Home() {
-
+  const [search, setSearch] = useState(true);
+  const [results, setResults] = useState(null)
   const [state,setState] = useState(
     {
       resultsHeading: "",
       resultsSubHeading:"",
       isLoading: false,
+      error: null,
   })
-  const [search, setSearch] = useState(true);
-  const [results, setResults] = useState(null)
-  const [userKeyword, setUserKeyword] = useState("");
-  
+
+
+  // API results
+  let dataValue = [];  
+
+
+  // FUNCTIONS ----- 
   // Events in the united states
   async function fetchUSEvents(){
     setState({isLoading:true})
@@ -50,27 +55,49 @@ export default function Home() {
     );
   }
   
-  //UK Events
-  async function fetchCAEvents(){
+  //Keyword Events
+  async function fetchKeyWordEvents(keyword){
     setState({isLoading:true})
-    const response = await fetch(`https://app.ticketmaster.com/discovery/v2/events.json?keyword=${userKeyword}&apikey=aHZGTbRV51sLBr9URwtcoKYSuSQmQXEr`);
+    const response = await fetch(`https://app.ticketmaster.com/discovery/v2/events.json?keyword=${keyword}&apikey=aHZGTbRV51sLBr9URwtcoKYSuSQmQXEr`);
     const data = await response.json();
+    console.log(data)
     setState({isLoading:false})
-    setState(
-      {
-        resultsHeading:`Results for "${userKeyword}"`,
-        resultsSubHeading: "Start scrolling to see all events in Canda"
-      }
-    )
     try{
       setResults(data._embedded.events);
+      setState(
+        {
+          resultsHeading:`Results for "${keyword}"`,
+          resultsSubHeading: `Start scrolling to see all results for '${keyword}'`,
+          error:false,
+        }
+      )
     }catch(e){
-      console.log(e)
+      setState(
+        {
+          resultsHeading:`Results for "${keyword}"`,
+          resultsSubHeading: `It looks like there are no results for '${keyword}'. Try something else :(`,
+          error:true,
+        }
+      )
+      setResults(null)
     }
   }
 
-  console.log(results);
 
+  if(results!= null){
+    results.forEach(result =>{
+      let arr = ([{
+          name: result.name,
+          state: ("state" in result._embedded.venues[0]) ? `${result._embedded.venues[0].state.name}` : ("country" in result._embedded.venues[0] ? result._embedded.venues[0].country.name : "error"),
+          city: result._embedded.venues[0].city.name,
+          countryCode: result._embedded.venues[0].country.countryCode,
+          img: result.images[0].url,
+          link: result.url,
+          id: result.id
+      }])
+      dataValue.push(...arr)
+    })
+  }
 
   return (
     <Container>
@@ -92,7 +119,7 @@ export default function Home() {
               <ListItem onClick = {()=>fetchLAMusicEvents()}>
                 <Link href = "/"><a>Music Events in Los Angeles</a></Link>
               </ListItem>          
-              <ListItem onClick = {()=>fetchCAEvents()}>
+              <ListItem onClick = {()=>fetchKeyWordEvents()}>
                 <Link href = "/"><a>Events in Canada</a></Link>
               </ListItem>          
               <ListItem onClick = {()=>setSearch(!search)}> 
@@ -110,9 +137,9 @@ export default function Home() {
               {state.resultsSubHeading}
             </Subheading>
           </TextWrapper>
-          {results != null &&
-            results.map(result =>(
-              <Box key = {result.id} id = {result.id} name = {(result.name) ? result.name : "m"} startDate = {result.dates.start.dateTime} img = {result.images[0].url} countryCode = {result._embedded.venues[0].country.countryCode} state = {(!result._embedded.venues[0].state.name === undefined) ? result._embedded.venues[0].state.name : ""} city = {result._embedded.venues[0].city.name} link = {result.url}/>
+          {dataValue != null &&
+            dataValue.map(result =>(
+              <Box key = {result.id} id = {result.id} name = {result.name} /*startDate = {result.dates.start.dateTime}*/ img = {result.img} countryCode = {result.countryCode} state = {result.state} city = {result.city} link = {result.link} />
             ))
           }
           <Loading display = {state.isLoading}>
@@ -122,7 +149,7 @@ export default function Home() {
           </Loading>
         </Right>
       </Wrapper>
-      <Search clicked = {search} setUserKeyword = {setUserKeyword}/>
+      <Search clicked = {search} fetchKeyWordEvents = {fetchKeyWordEvents}/>
     </Container>
   )
 }

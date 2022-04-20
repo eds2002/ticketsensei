@@ -2,7 +2,7 @@ import * as Styled from './Search.module';
 import { useState, useEffect } from 'react'
 const apiKey = `AIzaSyBKpiCGZc55UA9anZKG8hDhvKaFdwWNNAQ`
 
-const Search = ({clicked, setUserKeyword}) => {
+const Search = ({clicked, fetchKeyWordEvents}) => {
   const [modal, setModal] = useState(clicked)
   useEffect(()=>{
     setModal(!modal)
@@ -14,16 +14,15 @@ const Search = ({clicked, setUserKeyword}) => {
     }
   }
 
-  const submit = (e)=>{
+  const submit = async (e)=>{
     e.preventDefault();
    const keyword = e.target.keyword.value
-   console.log(keyword)
     if(keyword == ""){
       return;
     }
-    setUserKeyword(keyword);
-    e.target.keyword.value = ""
     setModal(!modal)
+    fetchKeyWordEvents(keyword);
+    e.target.keyword.value = ""
   }
   return (
     <Styled.Container id = "modal" enabled = {modal} onClick = {(e)=>modalClicked(e)}>

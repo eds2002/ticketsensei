@@ -1,8 +1,7 @@
-
+import {useState} from 'react'
 import styled from 'styled-components'
 
-const Box = ({img, name, desc, city, state, startDate, id, link}) => {
-    const stringLink = JSON.stringify(link);
+const Box = ({img, name, desc, city, state, startDate, id, link, data}) => {
   return (
     <a href = {`${link}`} target = "_blank">
         <Container id = {id}>
@@ -41,6 +40,7 @@ background:hsla(360,0%, 90%,1);
 border-radius:15px;
 padding:15px;
 margin:50px 0px;
+max-width:500px;
 position:relative;
 cursor:pointer;
 animation: zoom 1s cubic-bezier(0.85, 0, 0.15, 1) forwards;

@@ -65,7 +65,7 @@ height:100vh;
 padding:50px;
 overflow:scroll;
 position:relative;
-
+float:right;
 `
 
 export const Loading = styled.div`
