@@ -131,7 +131,7 @@ export default function Home() {
               Look for events
             </Heading>
             <Subheading>
-              Want to find out events by your area? Let's help you look.
+              Want to find out events by your area? Let&apos;s help you look.
             </Subheading>
           </TextWrapper>
           <Nav>

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 const Box = ({img, name, desc, city, state, startDate, id, link, data}) => {
   return (
-    <a href = {`${link}`} target = "_blank">
+    <a href = {`${link}`} target = "_blank" rel="noreferrer">
         <Container id = {id}>
             <BoxImage>
                 <img src = {img} alt = {`image of ${name}`}></img>
